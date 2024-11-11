@@ -1,0 +1,25 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+
+df = pd.read_csv("uber_fares.csv")
+df = df.dropna()
+Q1, Q3 = df['fare'].quantile(0.25), df['fare'].quantile(0.75)
+IQR = Q3 - Q1
+df = df[(df['fare'] >= Q1 - 1.5 * IQR) & (df['fare'] <= Q3 + 1.5 * IQR)]
+
+X = df.drop('fare', axis=1)
+y = df['fare']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+lr = LinearRegression().fit(X_train, y_train)
+rf = RandomForestRegressor(n_estimators=100, random_state=42).fit(X_train, y_train)
+
+y_pred_lr = lr.predict(X_test)
+y_pred_rf = rf.predict(X_test)
+
+print(f"Linear Regression - R2: {r2_score(y_test, y_pred_lr)}, RMSE: {np.sqrt(mean_squared_error(y_test, y_pred_lr))}")
+print(f"Random Forest - R2: {r2_score(y_test, y_pred_rf)}, RMSE: {np.sqrt(mean_squared_error(y_test, y_pred_rf))}")
