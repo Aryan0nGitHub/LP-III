@@ -1,0 +1,36 @@
+def is_safe(board, row, col):
+    for i in range(row):
+        if board[i] == col or \
+           board[i] - i == col - row or \
+           board[i] + i == col + row:
+            return False
+    return True
+
+def solve_n_queens(board, row):
+    if row == 8:
+        print_board(board)
+        return True
+    for col in range(8):
+        if is_safe(board, row, col):
+            board[row] = col
+            if solve_n_queens(board, row + 1):
+                return True
+            board[row] = -1  # Backtrack
+    return False
+
+def print_board(board):
+    for i in range(8):
+        row = ['Q' if x == board[i] else '.' for x in range(8)]
+        print(" ".join(row))
+    print()
+
+def main():
+    board = [-1] * 8  # Board initialized with -1 (no queens placed)
+    board[0] = 0  # Place the first queen at (0, 0)
+    print("First Queen Placed at (0, 0):")
+    print_board(board)
+    if not solve_n_queens(board, 1):
+        print("No solution found.")
+
+if __name__ == "__main__":
+    main()
