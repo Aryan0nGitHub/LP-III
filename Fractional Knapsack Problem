@@ -1,0 +1,22 @@
+class Item:
+    def __init__(self, profit, weight):
+        self.profit = profit
+        self.weight = weight
+
+def fractional_knapsack(capacity, items):
+    # Sort by profit-to-weight ratio
+    items.sort(key=lambda x: x.profit / x.weight, reverse=True)
+    total_value = 0.0
+    for item in items:
+        if capacity == 0:
+            break
+        take_weight = min(item.weight, capacity)
+        total_value += take_weight * (item.profit / item.weight)
+        capacity -= take_weight
+    return total_value
+
+# Main logic
+n = int(input("Enter number of items: "))
+items = [Item(int(input(f"Profit of item {i+1}: ")), int(input(f"Weight of item {i+1}: "))) for i in range(n)]
+capacity = int(input("Enter knapsack capacity: "))
+print(f"Maximum value in knapsack: {fractional_knapsack(capacity, items)}")
